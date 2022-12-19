@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="TestTask.Classes.Views.EmployeesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
+             xmlns:ViewModels="clr-namespace:TestTask.Classes.ViewModels"
+             xmlns:local="clr-namespace:TestTask.Classes.Views"
+             mc:Ignorable="d" 
+             DataContext="{Binding EmployeesViewModel, Source={StaticResource ViewModelLocator}}"
+             d:DesignHeight="450" d:DesignWidth="550">
+    <WrapPanel>
+        <ToolBarTray Orientation="Vertical">
+            <ToolBar Margin="2">
+                <Button Name="btnAddEmployee" Command="{Binding AddCommand}" 
+                                              CommandParameter="{Binding Path=DataContext.SelectedDepartment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                        Margin="2">
+                    <Image Source="/TestTask;component/Images/Add_24.png" 
+                           Style="{StaticResource SmallImageInButtonStyle}" />
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <DataGrid Name="dgEmpoyees" ItemsSource="{Binding Employees}"
+            CanUserAddRows="False" Margin="5" Width="Auto"
+            HorizontalAlignment="Stretch" VerticalAlignment="Top"  
+            ScrollViewer.CanContentScroll="True"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SelectedValue="{Binding SelectedEmployee}"
+            AutoGenerateColumns="False">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="CellEditEnding" >
+                    <i:InvokeCommandAction Command="{Binding RowEditEndingCommand}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="RowEditEnding" >
+                    <i:InvokeCommandAction Command="{Binding RowEditEndingCommand}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="LostFocus" >
+                    <i:InvokeCommandAction Command="{Binding RowEditEndingCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <DataGrid.Columns>
+                <!-- DELETE BUTTON -->
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Name="btnDeleteEmployee" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                Margin="2">
+                                <Image Source="/TestTask;component/Images/Delete_16.png" 
+                           Style="{StaticResource SmallImageInButtonStyle}" />
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!-- ИД -->
+                <DataGridTemplateColumn Header="ИД" IsReadOnly="True" Width="Auto">
+                    <!-- center data -->
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding EmployeeId}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <!-- center header -->
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                </DataGridTemplateColumn>
+                <!-- ФИО -->
+                <DataGridTemplateColumn Header="ФИО" IsReadOnly="False" SortMemberPath="Name" Width="150">
+                    <!-- center data -->
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Name}" Width="150" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <!-- center header -->
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                </DataGridTemplateColumn>
+                <!-- ДАТА РОЖДЕНИЯ -->
+                <DataGridTemplateColumn Header="Дата рождения" IsReadOnly="False" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding BirthDate, StringFormat={}{0:dd.MM.yyyy}}" 
+                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding BirthDate}" BorderThickness="0" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <!-- center header -->
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                </DataGridTemplateColumn>
+                <!-- ПОДРАЗДЕЛЕНИЕ -->
+                <DataGridTemplateColumn Header="Подразделение" IsReadOnly="False" Width="130">
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox Name ="cbEmployeeDepartments" 
+                                  ItemsSource="{Binding Path=DataContext.Departments, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding Department}"
+                                  SelectedValue="{Binding Department.DepartmentId}"
+                                  SelectedValuePath="DepartmentId"
+                                  DisplayMemberPath="Name"
+                                  IsSynchronizedWithCurrentItem="True">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="DropDownOpened" >
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.DropDownOpenedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Department.Name}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <!-- center header -->
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </WrapPanel>
+</UserControl>

@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Images\Add_24.png" />
+	  <None Remove="Images\Cancel_24.png" />
+	  <None Remove="Images\Delete_16.png" />
+	  <None Remove="Images\Edit_24.png" />
+	  <None Remove="Images\Error_16.png" />
+	  <None Remove="Images\Information_16.png" />
+	  <None Remove="Images\Question_16.png" />
+	  <None Remove="Images\Success_16.png" />
+	  <None Remove="Images\User_24.png" />
+	  <None Remove="Images\Warning_16.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="log4net" Version="2.0.15" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+		<PackageReference Include="System.Data.OleDb" Version="7.0.0" />
+		<PackageReference Include="System.Data.OracleClient" Version="1.0.8" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Classes\Common\" />
+		<Folder Include="Classes\Models\DataProviders\" />
+		<Folder Include="Classes\ViewModels\Business\Collections\" />
+		<Folder Include="Classes\ViewModels\Commands\" />
+		<Folder Include="Extensions\" />
+		<Folder Include="Converters\" />
+		<Folder Include="Resources\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Images\Add_24.png" />
+	  <Resource Include="Images\Cancel_24.png" />
+	  <Resource Include="Images\Delete_16.png" />
+	  <Resource Include="Images\Edit_24.png" />
+	  <Resource Include="Images\Error_16.png" />
+	  <Resource Include="Images\Information_16.png" />
+	  <Resource Include="Images\Question_16.png" />
+	  <Resource Include="Images\Success_16.png" />
+	  <Resource Include="Images\User_24.png" />
+	  <Resource Include="Images\Warning_16.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Classes\ViewModels\Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="App_Data\db_task.mdf">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="App_Data\db_task_log.ldf">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Classes\ViewModels\Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+		<None Update="log4net.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>

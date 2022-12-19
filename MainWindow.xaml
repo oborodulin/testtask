@@ -1,0 +1,153 @@
+﻿<Window x:Class="TestTask.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
+        xmlns:local="clr-namespace:TestTask"
+        xmlns:Converters="clr-namespace:TestTask.Converters"
+        xmlns:ViewModels="clr-namespace:TestTask.Classes.ViewModels"
+        xmlns:Attached="clr-namespace:TestTask.Classes.Views.Attached"
+        xmlns:Controls="clr-namespace:TestTask.Classes.Views.Controls"
+        xmlns:Views="clr-namespace:TestTask.Classes.Views"
+        xmlns:ViewModelLocators="clr-namespace:TestTask.Classes.Views.ViewModelLocators"
+        mc:Ignorable="d" 
+        DataContext="{Binding DepartmentsViewModel, Source={StaticResource ViewModelLocator}}"
+        Title="Тестовое задание" SizeToContent="Height" MinHeight="495" Width="550" MinWidth="550"
+        WindowStartupLocation ="CenterScreen">
+    <Window.Resources>
+        <!--ViewModelLocators:ViewModelLocator x:Key="ViewModelLocator" x:Name="ViewModelLocator"/-->
+        <Converters:EnumToIntConverter x:Key="EnumToIntConverter" />
+        <LinearGradientBrush x:Key="MenuItemBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="White" Offset="-1" />
+            <GradientStop Color="{StaticResource PacktOrangeColor}" Offset="0.65" />
+            <GradientStop Color="{StaticResource PacktOrangeColor}" Offset="0.75" />
+            <GradientStop Color="{StaticResource PacktBlackColor}" Offset="2" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="SelectedMenuItemBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="White" Offset="-1" />
+            <GradientStop Color="{StaticResource PacktOrangeColor}" Offset="0.05" />
+            <GradientStop Color="{StaticResource PacktOrangeColor}" Offset="0.95" />
+            <GradientStop Color="{StaticResource PacktBlackColor}" Offset="2" />
+        </LinearGradientBrush>
+        <Style x:Key="TitleStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontSize" Value="27" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Margin" Value="0,0,0,-7" />
+            <Setter Property="Attached:TextBlockProperties.OnMouseLeftButtonUp" Value="{Binding ShowStartViewCommand}" />
+        </Style>
+    </Window.Resources>
+    <!--Window.DataContext>
+        <StaticResourceExtension ResourceKey="ViewModelLocator"/>
+    </Window.DataContext-->
+    <!--DataContext="{Binding DepartmentsViewModel, Source={StaticResource ViewModelLocator}}"-->
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Справочник подразделений" FontSize="35" Margin="10,5"/>
+            <ToolBar Margin="5">
+                <Button Name="btnAddDepartment" Command="{Binding AddCommand}" Margin="5">
+                    <WrapPanel>
+                        <Image Source="/TestTask;component/Images/Add_24.png" 
+                           Style="{StaticResource SmallImageInButtonStyle}" />
+                        <Label Content="Добавить"/>
+                    </WrapPanel>
+                </Button>
+                <Button Name="btnEditDepartment" Command="{Binding EditCommand}"  Margin="5">
+                    <WrapPanel>
+                        <Image Source="/TestTask;component/Images/Edit_24.png" 
+                           Style="{StaticResource SmallImageInButtonStyle}" />
+                        <Label Content="Изменить"/>
+                    </WrapPanel>
+                </Button>
+                <Button Name="btnDeleteDepartment" Command="{Binding DeleteCommand}" Margin="5">
+                    <WrapPanel>
+                        <Image Source="/TestTask;component/Images/Delete_16.png" 
+                           Style="{StaticResource SmallImageInButtonStyle}" />
+                        <Label Content="Удалить"/>
+                    </WrapPanel>
+                </Button>
+                <Separator/>
+            </ToolBar>
+            <DataGrid Name="dgDepartments" ItemsSource="{Binding Departments}" AutoGenerateColumns="False" 
+                        CanUserAddRows="False" Margin="10" Height="300" 
+                        HorizontalAlignment="Left" VerticalAlignment="Top"  
+                        ScrollViewer.CanContentScroll="True"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedValue="{Binding SelectedDepartment}"
+                        RowDetailsVisibilityMode="VisibleWhenSelected"
+                        SelectionMode="Single" SelectionUnit="FullRow">
+                <!--SelectionChanged="Selector_OnSelectionChanged"-->
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="RowDetailsVisibilityChanged" >
+                        <i:InvokeCommandAction Command="{Binding Path=DataContext.ExpandCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding Path=SelectedDepartment}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="Auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Expander Width="50" IsExpanded="False">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Expanded" >
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.ExpandCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding Path=SelectedDepartment}" />
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="Collapsed" >
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CollapseCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding Path=SelectedDepartment}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Expander>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="ИД" Width="Auto">
+                        <!-- center data -->
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DepartmentId}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <!-- center header -->
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Наименование" Width="*">
+                        <!-- center data -->
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <!-- center header -->
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <Views:EmployeesView/>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+            <DockPanel>
+                <StatusBar DockPanel.Dock="Bottom">
+                    <StatusBarItem  Width="120">
+                        <TextBlock>Status:</TextBlock>
+                    </StatusBarItem>
+                    <StatusBarItem HorizontalAlignment="Stretch">
+                        <TextBlock Name="tbAppStatus" >Ready</TextBlock>
+                    </StatusBarItem>
+                </StatusBar>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Window>
