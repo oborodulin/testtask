@@ -4,13 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
-        xmlns:local="clr-namespace:TestTask"
         xmlns:Converters="clr-namespace:TestTask.Converters"
-        xmlns:ViewModels="clr-namespace:TestTask.Classes.ViewModels"
         xmlns:Attached="clr-namespace:TestTask.Classes.Views.Attached"
-        xmlns:Controls="clr-namespace:TestTask.Classes.Views.Controls"
         xmlns:Views="clr-namespace:TestTask.Classes.Views"
-        xmlns:ViewModelLocators="clr-namespace:TestTask.Classes.Views.ViewModelLocators"
         mc:Ignorable="d" 
         DataContext="{Binding DepartmentsViewModel, Source={StaticResource ViewModelLocator}}"
         Title="Тестовое задание" SizeToContent="Height" MinHeight="495" Width="550" MinWidth="550"
@@ -39,10 +35,6 @@
             <Setter Property="Attached:TextBlockProperties.OnMouseLeftButtonUp" Value="{Binding ShowStartViewCommand}" />
         </Style>
     </Window.Resources>
-    <!--Window.DataContext>
-        <StaticResourceExtension ResourceKey="ViewModelLocator"/>
-    </Window.DataContext-->
-    <!--DataContext="{Binding DepartmentsViewModel, Source={StaticResource ViewModelLocator}}"-->
     <Grid>
         <StackPanel>
             <TextBlock Text="Справочник подразделений" FontSize="35" Margin="10,5"/>
@@ -79,7 +71,6 @@
                         SelectedValue="{Binding SelectedDepartment}"
                         RowDetailsVisibilityMode="VisibleWhenSelected"
                         SelectionMode="Single" SelectionUnit="FullRow">
-                <!--SelectionChanged="Selector_OnSelectionChanged"-->
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="RowDetailsVisibilityChanged" >
                         <i:InvokeCommandAction Command="{Binding Path=DataContext.ExpandCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding Path=SelectedDepartment}" />
